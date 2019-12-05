@@ -10,8 +10,6 @@ import (
 	"github.com/bmizerany/lpx"
 )
 
-const bufferLen = 500
-
 func dummyHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "https://app.pganalyze.com/", http.StatusFound)
 }
@@ -38,7 +36,7 @@ func (s *Config) logHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleHeroku() (conf Config) {
-	conf.HerokuLogStream = make(chan HerokuLogStreamItem, bufferLen)
+	conf.HerokuLogStream = make(chan HerokuLogStreamItem, streamBufferLen)
 
 	// This is required to receive logs, as well as so Heroku doesn't think the dyno crashed
 	go func() {

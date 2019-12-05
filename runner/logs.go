@@ -74,6 +74,12 @@ func TestLogsForAllServers(servers []state.Server, globalCollectionOpts state.Co
 				hasFailedServers = true
 				prefixedLogger.PrintError("Could not download logs for server: %s", err)
 			}
+		} else if server.Config.GcpProjectID != "" {
+			prefixedLogger.PrintInfo("Testing log collection (Google Cloud SQL)...")
+			_, err := downloadLogsForServer(server, globalCollectionOpts, prefixedLogger)
+			if err != nil {
+				prefixedLogger.PrintError("Could not download logs for server: %s", err)
+			}
 		}
 	}
 

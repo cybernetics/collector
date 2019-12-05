@@ -6,21 +6,30 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/bmizerany/lpx"
 )
 
 type Config struct {
-	// Only used for Heroku servers to pass log messages to the input handler
+	// Only used for Heroku and Google Cloud SQL to pass log messages to the input handler
 	HerokuLogStream chan HerokuLogStreamItem
+	GcpLogStream    chan GcpLogStreamItem
 
 	Servers []ServerConfig
 }
+
+const streamBufferLen = 500
 
 type HerokuLogStreamItem struct {
 	Header    lpx.Header
 	Content   []byte
 	Namespace string
+}
+
+type GcpLogStreamItem struct {
+	OccurredAt time.Time
+	Content    string
 }
 
 type ServerIdentifier struct {
@@ -81,6 +90,8 @@ type ServerConfig struct {
 
 	GcpProjectID          string `ini:"gcp_project_id"`
 	GcpCloudSQLInstanceID string `ini:"gcp_cloudsql_instance_id"`
+	GcpPubsubSubscription string `ini:"gcp_pubsub_subscription"`
+	GcpCredentialsFile    string `ini:"gcp_credentials_file"`
 
 	SectionName string
 	Identifier  ServerIdentifier
